@@ -52,15 +52,25 @@ And then, I loaded the data. The data primarily includes Census data, CFPS2018 d
 # Load data
 ## Load the data of stage 1, Chinese journals coding data, and BTS data
 ```{r}
-load("df_Pre_Stage2_Journal_Code.Rdata")
+load(here("3_Data_Analysis","3_1_Intermediate_Data","df_chinese_subj_rr_stage1.Rdata")) 
 
-load("df_chinese_subj_rr_stage1.Rdata")
+# "df_chinese_subj_rr_stage1.Rdata" is Stage 1 data for the Registered Report, covering census6, census7, CFPS2018, PSA001.
 
-load("BTS.Rdata")
 
-BTS_coding <- readxl::read_xlsx("D://chin-subj//2_Data_Extraction//2_2_BTS//Chin_Subj_Proofreading_BTS_Target_Population.xlsx")
-BTS_coding <- BTS_coding %>% 
-  dplyr::filter(Coder == "final")
+load(here("3_Data_Analysis","3_1_Intermediate_Data","Journal.Rdata")) 
+
+# "Stage2_Journal_Code.Rdata" includes Journal coding data, replaced articles coding data, and preprocessed data for "other age".
+
+
+load(here("3_Data_Analysis","3_1_Intermediate_Data","BTS.Rdata"))  
+
+# "BTS.Rdata" includes data of each international collaborative project, BTS preprocessed education data, and BTS target population coded data.
+
+
+load(here("3_Data_Analysis","3_1_Intermediate_Data","Analyze_supporting_data.Rdata")) 
+
+#"Analyze_supporting_data" contains educational and regional data from census6 and census7, ShanghaiRanking data, country code data, and color data for regional plotting.
+
 
 ## Here, I remove some data sets to reduce data set clutter.
 rm(df_regionCode)
@@ -69,6 +79,9 @@ rm(df_regionCode)
 
 ## combine raw data and coding data of BTS
 ```{r}
+BTS_coding <- BTS_coding %>% 
+  dplyr::filter(Coder == "final")
+
 for (i in seq_along(BTS)) {
   
   current_df <- BTS[[i]]
@@ -238,21 +251,21 @@ save(Journal, file ="Journal.Rdata")
 
 Meanwhile, I process the special target population
 ```{r}
-Journal_special_target_population <- Journal %>% 
-  dplyr::select(Article_IDs,Article_Title,Target_Population_N,Coding_Basis_N,Sample_Type_N) %>% 
-  dplyr::filter(Target_Population_N == 1) %>% 
-  dplyr::group_by(Article_IDs) %>% 
-  dplyr::slice(1)
+# Journal_special_population <- Journal %>% 
+#   dplyr::select(Article_IDs,Article_Title,Target_Population_N,Coding_Basis_N,Sample_Type_N) %>% 
+#   dplyr::filter(Target_Population_N == 1) %>% 
+#   dplyr::group_by(Article_IDs) %>% 
+#   dplyr::slice(1)
 
-# writexl::write_xlsx(Journal_special_target_population,"Journal_special_target_population.xlsx")
+# writexl::write_xlsx(Journal_special_population,"Journal_special_population.xlsx")
 
-Journal_special_target_population2 <- readxl::read_xlsx("Journal_special_target_population.xlsx") %>% 
+Journal_special_target_population2 <- Journal_special_population %>% 
   dplyr::select(Article_IDs,Article_Title,`Disscu.&.Conclu`, ,Target_Population_N,Coding_Basis_N,Recode_target_population)
 
 
 ## Save the special target population for exploration analyse
 
-save(Journal_special_target_population2,file =  "Journal_special_target_population2.RData")
+# save(Journal_special_target_population2,file =  "Journal_special_target_population2.RData")
 ```
 
 
@@ -261,11 +274,11 @@ I try to classify special target population
 ## college
 Journal_college_TP <- Journal_special_target_population2 %>% 
   dplyr::filter(grepl("大学生|研究生|大学新生",Recode_target_population)) %>% 
-  dplyr::filter(Recode_target_population == "大学生" | Recode_target_population == "研究生") 
-# %>% 
-#   dplyr::distinct(Article_IDs) ## 106
+  dplyr::filter(Recode_target_population == "大学生" | Recode_target_population == "研究生")
+  # %>%
+  # dplyr::distinct(Article_IDs) ## 106
 
-table(Journal_college_TP$Recode_target_population)
+# table(Journal_college_TP$Recode_target_population)
 ```
 
 
@@ -403,7 +416,8 @@ Fig_Journal_report <- ggplot(Journal_report,aes(col_names,proportion,fill=Var1))
 
 Fig_Journal_report
 
-ggsave("Fig_Journal_report.pdf", Fig_Journal_report, device = "pdf", width=16, height = 9)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\Fig_Journal_report.pdf", 
+       Fig_Journal_report, device = "pdf", width=16, height = 9)
 
 ## Here, I remove some data sets to reduce data set clutter.
 rm(report_list,report_table,i,Journal_education_occupation_report,Journal_education_occupation_table)
@@ -469,27 +483,6 @@ Journal_SES_report_5 <- Journal_SES_report %>%
   dplyr::filter(SES_N == 5)  ## 10 studies
 
 # table(Journal_SES_report_studynum$ses_reported_ceta)  ## 0(261)
-```
-
-
-## the reporting situation of BTS
-```{r}
-# BTS_colnames_list <- lapply(names(BTS), function(name) {
-#   data.frame(
-#     source_dataframe = name,
-#     column_name = colnames(BTS[[name]])
-#   )
-# })
-# 
-# # merge into one dataframe
-# BTS_colnames <- do.call(rbind, BTS_colnames_list)
-# 
-# 
-# ## exclude our add colnames
-# BTS_colnames2 <- BTS_colnames %>% 
-#   dplyr::filter(!column_name %in% c("ISO2","ISO3","Target_Population","Coding_Basis",
-#                                  "Countrycode","Countryfullname","Coder")) %>% 
-#   dplyr::count(column_name)
 ```
 
 
@@ -776,18 +769,18 @@ Journal_age <- Journal_key_variable %>%
 
 
 ## Filter M_age have multiple group data
-Journal_strings_age <- Journal_age %>% 
-  dplyr::filter(grepl(";|:|：|,",M_age)) %>% 
-  dplyr::mutate(M_age = gsub("[;；]",";",M_age),
-                SD_age = gsub("[;；]",";",SD_age)) %>% 
-  tidyr::separate_rows(c(M_age,SD_age),sep = ";") %>% 
-  dplyr::mutate(M_age = str_extract(M_age,"\\d+\\.\\d+|\\d+"),
-                SD_age = str_extract(SD_age,"\\d+\\.\\d+|\\d+")) 
+# Journal_strings_age <- Journal_age %>% 
+#   dplyr::filter(grepl(";|:|：|,",M_age)) %>% 
+#   dplyr::mutate(M_age = gsub("[;；]",";",M_age),
+#                 SD_age = gsub("[;；]",";",SD_age)) %>% 
+#   tidyr::separate_rows(c(M_age,SD_age),sep = ";") %>% 
+#   dplyr::mutate(M_age = str_extract(M_age,"\\d+\\.\\d+|\\d+"),
+#                 SD_age = str_extract(SD_age,"\\d+\\.\\d+|\\d+")) 
 
 ## save `Journal_strings_age` and return to the original papers to re-enter and verify the data.
 # writexl::write_xlsx(Journal_strings_age,"Journal_strings_age.xlsx")
 
-Journal_strings_age_newdata <- readxl::read_xlsx("Journal_strings_age.xlsx") %>% 
+Journal_strings_age_newdata <- Journal_strings_age %>% 
   dplyr::filter(!is.na(Sample_Size)) %>% 
   dplyr::mutate_at(vars(4:9),as.numeric)
 
@@ -1270,9 +1263,6 @@ Try to process educational attainment data from Chinese journal.
 # writexl::write_xlsx(Journal_edu,"Journal_edu.xlsx")
 
 
-Journal_edu <- readxl::read_xlsx("Journal_edu.xlsx")
-
-
 ## analysis edu base on target population
 ## general population
 Journal_edu_general_article <- Journal_key_variable %>% 
@@ -1544,7 +1534,8 @@ H1_Fig_gender_age_edu_general <-  H1_Fig_gender_general + H1_Fig_age_general + H
   patchwork::plot_annotation(tag_levels = 'A')&
   theme(legend.position = 'bottom')
 
-ggsave("H1_Fig_gender_age_edu_general.pdf",H1_Fig_gender_age_edu_general, device = "pdf", width=18, height = 18)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H1_Fig_gender_age_edu_general.pdf",
+       H1_Fig_gender_age_edu_general, device = "pdf", width=18, height = 18)
 
 H1_Fig_gender_age_edu_general
 ```
@@ -2042,8 +2033,6 @@ For age within general population, I found the Bayesian multinomial test shows e
 ### Educational attainment
 Load and process the edu data of census 7th
 ```{r}
-Census7_edu <- readxl::read_xls("A0401.xls")
-
 Census7_edu_adults <- Census7_edu %>% 
   dplyr::slice(c(3,4,29,30,32,39,46,53,60,67,74,81,88,95,102,109,116,123)) %>% 
   dplyr::select(1,2,5,8,11,14,17,20,23,26,29) %>% 
@@ -2202,7 +2191,8 @@ H2_Fig_gender_age_edu_general <- H2_Fig_gender_general + H2_Fig_age_general +H2_
   plot_layout(ncol = 2, heights = c(4,4))+
   patchwork::plot_annotation(tag_levels = 'A')
 
-ggsave("H2_Fig_gender_age_edu_general.pdf",H2_Fig_gender_age_edu_general, device = "pdf", width=18, height = 18)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H2_Fig_gender_age_edu_general.pdf",
+       H2_Fig_gender_age_edu_general, device = "pdf", width=18, height = 18)
 
 H2_Fig_gender_age_edu_general
 ```
@@ -2351,7 +2341,7 @@ multiple regions
  # writexl::write_xlsx(Journal_region_multiple,"Journal_region_multiple.xlsx")
  
  ## re-input data and load data
- Journal_region_multiple <- readxl::read_xlsx("Journal_region_multiple.xlsx") %>% 
+ Journal_region_multiple <-  Journal_region_multiple %>% 
    dplyr::filter(True_Value != "No specific value") 
 
 
@@ -2413,7 +2403,7 @@ Journal_region_seven <- merge(Journal_region_general_tab2,China_region_seven,
 
 The second step, I processed of provincial distribution of population for census7.
 ```{r message=FALSE, warning=FALSE, include=FALSE}
-Census7_region <- readxl::read_xls("A0101.xls") %>% 
+Census7_region <- Census7_region %>% 
   dplyr::select(1,5) %>% 
   dplyr::rename(Region = 1, n = 2) %>% 
   dplyr::filter(!is.na(Region)) %>% 
@@ -2583,7 +2573,8 @@ plot_annotation(tag_levels = 'A',
 
 H2_Fig_major_region
 
-ggsave("H2_Fig_major_region.pdf",H2_Fig_major_region, device = "pdf", width= 15, height = 9)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H2_Fig_major_region.pdf",
+       H2_Fig_major_region, device = "pdf", width= 15, height = 9)
 
 ```
 
@@ -2596,7 +2587,7 @@ Region_map_data <-  bind_rows(Census7_region,CFPS2018_region,
                               Journal_region_general_tab2)
 
 ## load color data
-Region_map_color <- readxl::read_xlsx("colour.xlsx") %>% 
+Region_map_color <- colour %>% 
   dplyr::mutate(QUHUADAIMA = as.character(QUHUADAIMA)) %>% 
   dplyr::rename(Region = 1) %>% 
   dplyr::select(-2)
@@ -2697,7 +2688,8 @@ H2_Fig_region <- H2_Fig_Census7_region  + H2_Fig_region_general + H2_Fig_CFPS201
   theme(plot.tag = element_text(size = 20))
 
 
-ggsave("H2_Fig_region.pdf", H2_Fig_region, device = "pdf", width=10, height = 15)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H2_Fig_region.pdf",
+       H2_Fig_region, device = "pdf", width=10, height = 15)
 
 H2_Fig_region 
 ```
@@ -3354,7 +3346,8 @@ H3_Fig_gender2 <- H3_Fig_BF_gender + H3_Fig_gender +
   plot_annotation(tag_levels = 'A')  & 
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
-ggsave("H3_Fig_gender.pdf", H3_Fig_gender2, device = "pdf", width=18, height = 18)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H3_Fig_gender.pdf", 
+       H3_Fig_gender2, device = "pdf", width=18, height = 18)
 
 H3_Fig_gender2
 
@@ -3364,7 +3357,8 @@ H3_Fig_age <- H3_Fig_BF_PsyStages + H3_Fig_PsyStages +
   plot_annotation(tag_levels = 'A')  & 
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
-ggsave("H3_Fig_age.pdf", H3_Fig_age, device = "pdf", width=18, height = 18)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H3_Fig_age.pdf", 
+       H3_Fig_age, device = "pdf", width=18, height = 18)
 
 H3_Fig_age
 
@@ -3375,7 +3369,8 @@ H3_Fig_age_suppl <- H3_Fig_BF_interval10 + H3_Fig_interval10 +
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
 
-ggsave("H3_Fig_age_suppl .pdf", H3_Fig_age_suppl , device = "pdf", width=18, height = 18)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H3_Fig_age_suppl.pdf", 
+       H3_Fig_age_suppl , device = "pdf", width=18, height = 18)
 
 
 H3_Fig_age_suppl 
@@ -3519,7 +3514,8 @@ H3_Fig_Lucca <- H3_Fig_Lucca_gender + H3_Fig_BF_Lucca_gender +
   plot_annotation(tag_levels = 'A')  & 
   theme(plot.tag = element_text(size = 18, face = "bold"))
 
-ggsave("H3_Fig_Lucca.pdf", H3_Fig_Lucca, device = "pdf", width=18, height = 9)
+ggsave("D:\\chin-subj\\3_Data_Analysis\\3_2_image\\H3_Fig_Lucca.pdf", 
+       H3_Fig_Lucca, device = "pdf", width=18, height = 9)
 
 H3_Fig_Lucca
 ```

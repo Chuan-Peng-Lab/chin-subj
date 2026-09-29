@@ -77,6 +77,22 @@ rm(df_regionCode)
 ```
 
 
+*Note*: Part of the BTS data in the present study was acquired through email correspondence with the authors. Public sharing of these data is prohibited by copyright; interested readers may contact the authors to request access.
+```{r BTS email data}
+remove_BTS_info <- c("BTS_Bertolo_et_al_2023",
+                     "BTS_Klein_et_al_2018_1",
+                     "BTS_Klein_et_al_2018_2",
+                     "BTS_Vlasceanu_et_al_2023",
+                     "BTS_Kirkland_et_al_2022")
+
+BTS_opendata <- BTS[!names(BTS) %in% remove_BTS_info]
+BTS_edu_list_opendata <- BTS_edu_list[!names(BTS_edu_list) %in% remove_BTS_info]
+BTS_region_opendata <- BTS_region[!names(BTS_region) %in% remove_BTS_info]
+
+save(BTS,BTS_coding,BTS_edu_list, BTS_region,BTS_keywords,file = here::here("3_Data_Analysis", "3_1_Intermediate_Data", "BTS_opendata.RData"))
+```
+
+
 ## combine raw data and coding data of BTS
 ```{r}
 BTS_coding <- BTS_coding %>% 

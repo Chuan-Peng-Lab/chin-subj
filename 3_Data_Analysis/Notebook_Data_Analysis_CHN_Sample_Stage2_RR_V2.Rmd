@@ -85,11 +85,19 @@ remove_BTS_info <- c("BTS_Bertolo_et_al_2023",
                      "BTS_Vlasceanu_et_al_2023",
                      "BTS_Kirkland_et_al_2022")
 
+## open data
 BTS_opendata <- BTS[!names(BTS) %in% remove_BTS_info]
 BTS_edu_list_opendata <- BTS_edu_list[!names(BTS_edu_list) %in% remove_BTS_info]
 BTS_region_opendata <- BTS_region[!names(BTS_region) %in% remove_BTS_info]
 
 save(BTS,BTS_coding,BTS_edu_list, BTS_region,BTS_keywords,file = here::here("3_Data_Analysis", "3_1_Intermediate_Data", "BTS_opendata.RData"))
+
+## email data
+BTS_opendata <- BTS[names(BTS) %in% remove_BTS_info]
+BTS_edu_list_opendata <- BTS_edu_list[names(BTS_edu_list) %in% remove_BTS_info]
+BTS_region_opendata <- BTS_region[names(BTS_region) %in% remove_BTS_info]
+
+save(BTS,BTS_coding,BTS_edu_list, BTS_region,BTS_keywords,file = here::here("3_Data_Analysis", "3_1_Intermediate_Data", "BTS_emaildata.RData"))
 ```
 
 

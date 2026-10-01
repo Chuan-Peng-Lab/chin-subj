@@ -1483,10 +1483,10 @@ the general population.</p>
 <span id="cb84-13"><a href="#cb84-13" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Highschool =</span> <span class="st">&quot;High_school_and_above&quot;</span>,</span>
 <span id="cb84-14"><a href="#cb84-14" tabindex="-1"></a>                <span class="at">College =</span> <span class="st">&quot;College_and_above&quot;</span>)</span>
 <span id="cb84-15"><a href="#cb84-15" tabindex="-1"></a></span>
-<span id="cb84-16"><a href="#cb84-16" tabindex="-1"></a><span class="co"># Journal_edu_other_sampletype %&gt;% </span></span>
-<span id="cb84-17"><a href="#cb84-17" tabindex="-1"></a><span class="co">#   dplyr::filter(Sample_Type_N == 1) %&gt;% </span></span>
+<span id="cb84-16"><a href="#cb84-16" tabindex="-1"></a><span class="co"># Journal_edu_other_sampletype %&gt;%</span></span>
+<span id="cb84-17"><a href="#cb84-17" tabindex="-1"></a><span class="co">#   dplyr::filter(Sample_Type_N == 1) %&gt;%</span></span>
 <span id="cb84-18"><a href="#cb84-18" tabindex="-1"></a><span class="co">#   dplyr::select(Article_IDs_N,Sample_Type_N,Target_Population_N,</span></span>
-<span id="cb84-19"><a href="#cb84-19" tabindex="-1"></a><span class="co">#                 Sample_Size) %&gt;% </span></span>
+<span id="cb84-19"><a href="#cb84-19" tabindex="-1"></a><span class="co">#                 Sample_Size) %&gt;%</span></span>
 <span id="cb84-20"><a href="#cb84-20" tabindex="-1"></a><span class="co"># distinct(Article_IDs_N) ## 300</span></span>
 <span id="cb84-21"><a href="#cb84-21" tabindex="-1"></a></span>
 <span id="cb84-22"><a href="#cb84-22" tabindex="-1"></a><span class="do">## sample type is 2</span></span>
@@ -2257,7 +2257,7 @@ calculate preschool children.</p>
 <span id="cb132-47"><a href="#cb132-47" tabindex="-1"></a>                                                <span class="at">factor =</span> <span class="st">&quot;Gender&quot;</span>,</span>
 <span id="cb132-48"><a href="#cb132-48" tabindex="-1"></a>                                                <span class="at">observed =</span> <span class="st">&quot;Chinese participants&quot;</span>,</span>
 <span id="cb132-49"><a href="#cb132-49" tabindex="-1"></a>                                                <span class="at">expected =</span> <span class="st">&quot;Census7&quot;</span>)</span></code></pre></div>
-<p>Gender:Lucca vs Journal, <span class="math inline">\(Log(BF_{a0})\)</span> = -2.0602682. The result
+<p>Gender:Lucca vs Census, <span class="math inline">\(Log(BF_{a0})\)</span> = -2.0602682. The result
 showed that moderate evidence in favor of <span class="math inline">\(H_0\)</span></p>
 <p>I calculate college</p>
 <div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" tabindex="-1"></a>Journal_college_TP_IDs <span class="ot">&lt;-</span>  Journal_college_TP <span class="sc">%&gt;%</span> </span>

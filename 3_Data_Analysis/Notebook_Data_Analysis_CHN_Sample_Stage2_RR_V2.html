@@ -204,33 +204,28 @@ data</h2>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co"># &quot;Stage2_Journal_Code.Rdata&quot; includes Journal coding data, replaced articles coding data, and preprocessed data for &quot;other age&quot;.</span></span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">&quot;3_Data_Analysis&quot;</span>,<span class="st">&quot;3_1_Intermediate_Data&quot;</span>,<span class="st">&quot;BTS.Rdata&quot;</span>))  </span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># &quot;BTS.Rdata&quot; includes data of each international collaborative project, BTS preprocessed education data, and BTS target population coded data.</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">&quot;3_Data_Analysis&quot;</span>,<span class="st">&quot;3_1_Intermediate_Data&quot;</span>,<span class="st">&quot;Analyze_supporting_data.Rdata&quot;</span>)) </span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">&quot;3_Data_Analysis&quot;</span>,<span class="st">&quot;3_1_Intermediate_Data&quot;</span>,<span class="st">&quot;BTS_opendata.Rdata&quot;</span>)) </span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">&quot;3_Data_Analysis&quot;</span>,<span class="st">&quot;3_1_Intermediate_Data&quot;</span>,<span class="st">&quot;BTS_emaildata.Rdata&quot;</span>)) </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># &quot;BTS_opendata.Rdata&quot; include open‑access dataset (23 BTS datasets from public repositories e.g., OSF), coded BTS data and keyword metadata</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># &quot;BTS_emaildata.Rdata&quot; include email‑sourced dataset (4 datasets obtained directly from authors). These datasets are not publicly available.</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
 <span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&quot;Analyze_supporting_data&quot; contains educational and regional data from census6 and census7, ShanghaiRanking data, country code data, and color data for regional plotting.</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">&quot;3_Data_Analysis&quot;</span>,<span class="st">&quot;3_1_Intermediate_Data&quot;</span>,<span class="st">&quot;Analyze_supporting_data.Rdata&quot;</span>)) </span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="do">## Here, I remove some data sets to reduce data set clutter.</span></span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="fu">rm</span>(df_regionCode)</span></code></pre></div>
-<p><em>Note</em>: Part of the BTS data in the present study was acquired
-through email correspondence with the authors. Public sharing of these
-data is prohibited by copyright; interested readers may contact the
-authors to request access.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>remove_BTS_info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;BTS_Bertolo_et_al_2023&quot;</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                     <span class="st">&quot;BTS_Klein_et_al_2018_1&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                     <span class="st">&quot;BTS_Klein_et_al_2018_2&quot;</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                     <span class="st">&quot;BTS_Vlasceanu_et_al_2023&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>                     <span class="st">&quot;BTS_Kirkland_et_al_2022&quot;</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>BTS_opendata <span class="ot">&lt;-</span> BTS[<span class="sc">!</span><span class="fu">names</span>(BTS) <span class="sc">%in%</span> remove_BTS_info]</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>BTS_edu_list_opendata <span class="ot">&lt;-</span> BTS_edu_list[<span class="sc">!</span><span class="fu">names</span>(BTS_edu_list) <span class="sc">%in%</span> remove_BTS_info]</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>BTS_region_opendata <span class="ot">&lt;-</span> BTS_region[<span class="sc">!</span><span class="fu">names</span>(BTS_region) <span class="sc">%in%</span> remove_BTS_info]</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">save</span>(BTS,BTS_coding,BTS_edu_list, BTS_region,BTS_keywords,<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;3_Data_Analysis&quot;</span>, <span class="st">&quot;3_1_Intermediate_Data&quot;</span>, <span class="st">&quot;BTS_opendata.RData&quot;</span>))</span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&quot;Analyze_supporting_data&quot; contains educational and regional data from census6 and census7, ShanghaiRanking data, country code data, and color data for regional plotting.</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="do">## Here, I remove some data sets to reduce data set clutter.</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="fu">rm</span>(df_regionCode)</span></code></pre></div>
+</div>
+<div id="combine-bts-opendata-and-emaildata" class="section level2">
+<h2>combine BTS opendata and emaildata</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>BTS <span class="ot">&lt;-</span> <span class="fu">c</span>(BTS_opendata,BTS_emaildata)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>BTS_edu_list <span class="ot">&lt;-</span> <span class="fu">c</span>(BTS_edu_list_opendata,BTS_edu_list_emaildata)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>BTS_region <span class="ot">&lt;-</span> <span class="fu">c</span>(BTS_region_opendata,BTS_region_emaildata)</span></code></pre></div>
 </div>
 <div id="combine-raw-data-and-coding-data-of-bts" class="section level2">
 <h2>combine raw data and coding data of BTS</h2>
@@ -855,7 +850,7 @@ target population is special target population Specifically, it focuses
 on infants. Therefore, in specila target population, I will compare
 Lucca et al..(2024) with Chinese journal studies targeting
 infants/toddlers.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>Lucca_gender_special <span class="ot">&lt;-</span> BTS[[<span class="dv">19</span>]] <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>Lucca_gender_special <span class="ot">&lt;-</span> BTS[[<span class="st">&quot;BTS_Lucca_et_al_2024&quot;</span>]] <span class="sc">%&gt;%</span> </span>
 <span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(ISO2 <span class="sc">==</span> <span class="st">&quot;CN&quot;</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Gender) <span class="sc">%&gt;%</span> </span>
 <span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="do">## Female 40, Male 53</span></span>
